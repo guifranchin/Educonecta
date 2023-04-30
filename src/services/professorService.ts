@@ -1,6 +1,6 @@
 import knex from "../database/connection";
 
-const professorService = {
+export const professorService = {
   async create(nome: string, endereco: string, especialidade: string) {
     const professor = {
       nome,
@@ -63,4 +63,3 @@ const professorService = {
   },
 };
 
-export default professorService;

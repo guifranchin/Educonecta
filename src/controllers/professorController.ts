@@ -1,4 +1,4 @@
-import professorService from "../services/professorService";
+import {professorService} from "../services/professorService";
 import {
   Controller,
   HttpException,

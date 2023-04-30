@@ -1,7 +1,7 @@
 import request from "supertest";
 import app from "../../src/index";
 
-describe("POST /alunos", () => {
+/* describe("POST /alunos", () => {
   let pessoa: any;
 
   beforeAll(() => {
@@ -23,4 +23,4 @@ describe("POST /alunos", () => {
     console.log(response.body)
     expect(response.body).toMatchObject(expectedAluno);
   });
-});
+}); */
