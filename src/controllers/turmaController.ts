@@ -1,92 +1,100 @@
 import { turmaService } from "../services/turmaService";
+import {
+  Controller,
+  HttpException,
+  HttpRequest,
+  HttpResponse,
+  HttpStatusCode,
+} from "./controller_base";
 
-export const turmaController = {
-  async create(request: any, response: any) {
-    const { ano, semestre } = request.body;
+export class CreateTurmaContoller extends Controller {
+  async perform(httpRequest: HttpRequest): Promise<HttpResponse> {
+    const { ano, semestre } = httpRequest.body;
 
-    try {
-      const createdTurma = await turmaService.create(
-        ano,
-        semestre
-      );
-      return response.status(201).json(createdTurma);
-    } catch (error) {
-      console.log(error);
-      return response.status(500).json({ message: "Internal server error" });
+    const createdTurma = await turmaService.create(ano, semestre);
+    return {
+      statusCode: HttpStatusCode.Created,
+      body: createdTurma,
+    };
+  }
+}
+
+export class ListTurmasController extends Controller {
+  async perform(httpRequest: HttpRequest): Promise<HttpResponse> {
+    const turmas = await turmaService.list();
+
+    return {
+      statusCode: HttpStatusCode.Ok,
+      body: turmas,
+    };
+  }
+}
+
+export class UpdateTurmaController extends Controller {
+  async perform(httpRequest: HttpRequest): Promise<HttpResponse> {
+    const { id } = httpRequest.params;
+    const { ano, semestre, cursoId, professorId } = httpRequest.body;
+
+    const updatedTurma = await turmaService.update(
+      Number(id),
+      ano,
+      semestre,
+      cursoId,
+      professorId
+    );
+
+    if (!updatedTurma) {
+      throw new HttpException(HttpStatusCode.NotFound, "Turma not found");
     }
-  },
 
-  async update(request: any, response: any) {
-    const { id } = request.params;
-    const { ano, semestre, cursoId, professorId } = request.body;
+    return {
+      statusCode: HttpStatusCode.Ok,
+      body: updatedTurma,
+    };
+  }
+}
 
-    try {
-      const updatedTurma = await turmaService.update(
-        Number(id),
-        ano,
-        semestre,
-        cursoId,
-        professorId
-      );
+export class DeleteTurmaController extends Controller {
+  async perform(httpRequest: HttpRequest): Promise<HttpResponse> {
+    const { id } = httpRequest.params;
 
-      if (updatedTurma) {
-        return response.json(updatedTurma);
-      } else {
-        return response.status(404).json({ message: "Turma not found" });
-      }
-    } catch (error) {
-      console.log(error);
-      return response.status(500).json({ message: "Internal server error" });
+    const deletedTurma = await turmaService.delete(Number(id));
+
+    if (!deletedTurma) {
+      throw new HttpException(HttpStatusCode.NotFound, "Professor not found");
     }
-  },
 
-  async delete(request: any, response: any) {
-    const { id } = request.params;
+    return {
+      statusCode: HttpStatusCode.Ok,
+      body: deletedTurma,
+    };
+  }
+}
 
-    try {
-      const deletedTurma = await turmaService.delete(Number(id));
+export class SearchTurmaByAnoController extends Controller {
+  async perform(httpRequest: HttpRequest): Promise<HttpResponse> {
+    const { ano } = httpRequest.params;
+    const turmas = await turmaService.findByYear(
+      ano
+    );
 
-      if (deletedTurma) {
-        return response.json(deletedTurma);
-      } else {
-        return response.status(404).json({ message: "Turma not found" });
-      }
-    } catch (error) {
-      console.log(error);
-      return response.status(500).json({ message: "Internal server error" });
-    }
-  },
+    return {
+      statusCode: HttpStatusCode.Ok,
+      body: turmas,
+    };
+  }
+}
 
-  async list(request: any, response: any) {
-    try {
-      const turmas = await turmaService.list();
-      return response.json(turmas);
-    } catch (error) {
-      console.log(error);
-      return response.status(500).json({ message: "Internal server error" });
-    }
-  },
+export class SearchTurmaBySemestreController extends Controller {
+  async perform(httpRequest: HttpRequest): Promise<HttpResponse> {
+    const { semestre } = httpRequest.params;
+    const turmas = await turmaService.findBySemester(
+      semestre
+    );
 
-  async searchTurmasBySemestre(req: any, res: any) {
-    const { semestre } = req.params;
-    try {
-      const turmas = await turmaService.findBySemester(semestre);
-
-      res.json(turmas);
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: "Erro ao buscar turmas por semestre" });
-    }
-  },
-
-  async searchTurmasByAno(req: any, res: any) {
-    try {
-      const turmas = await turmaService.findByYear(req.params.ano);
-
-      res.json(turmas);
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: "Erro ao buscar turmas por ano" });
-    }
-  },
-};
+    return {
+      statusCode: HttpStatusCode.Ok,
+      body: turmas,
+    };
+  }
+}

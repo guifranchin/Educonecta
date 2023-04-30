@@ -1,86 +1,97 @@
 import { userService } from "../services/alunoService";
-export const alunoController = {
-  async create(request: any, response: any) {
-    const { nome, idade, endereco } = request.body;
+import {
+  Controller,
+  HttpException,
+  HttpRequest,
+  HttpResponse,
+  HttpStatusCode,
+} from "./controller_base";
+
+export class CreateAlunoContoller extends Controller {
+  async perform(httpRequest: HttpRequest): Promise<HttpResponse> {
+    const { nome, idade, endereco } = httpRequest.body;
 
     const createdUser = await userService.create(nome, idade, endereco);
 
-    return response.status(201).json(createdUser);
-  },
+    return {
+      statusCode: HttpStatusCode.Created,
+      body: createdUser,
+    };
+  }
+}
 
-  async list(request: any, response: any) {
-    try {
-      const users = await userService.list();
+export class ListAlunoController extends Controller {
+  async perform(httpRequest: HttpRequest): Promise<HttpResponse> {
+    const users = await userService.list();
 
-      return response.json(users);
-    } catch (error) {
-      console.error(error);
-      return response.status(500).json({ error: "Internal server error" });
+    return {
+      statusCode: HttpStatusCode.Ok,
+      body: users,
+    };
+  }
+}
+
+export class ShowAlunoController extends Controller {
+  async perform(httpRequest: HttpRequest): Promise<HttpResponse> {
+    const { id } = httpRequest.params;
+
+    const user = await userService.show(id);
+
+    if (!user) {
+      throw new HttpException(HttpStatusCode.NotFound, "User not found");
     }
-  },
 
-  async show(request: any, response: any) {
-    try {
-      const { id } = request.params;
+    return {
+      statusCode: HttpStatusCode.Ok,
+      body: user,
+    };
+  }
+}
 
-      const user = await userService.show(id);
+export class UpdateAlunoController extends Controller {
+  async perform(httpRequest: HttpRequest): Promise<HttpResponse> {
+    const { id } = httpRequest.params;
+    const { nome, idade, endereco } = httpRequest.body;
 
-      if (!user) {
-        return response.status(404).json({ error: "User not found" });
-      }
+    const updatedUser = await userService.update(id, nome, idade, endereco);
 
-      return response.json(user);
-    } catch (error) {
-      console.error(error);
-      return response.status(500).json({ error: "Internal server error" });
+    if (!updatedUser) {
+      throw new HttpException(HttpStatusCode.NotFound, "User not found");
     }
-  },
 
-  async update(request: any, response: any) {
-    try {
-      const { id } = request.params;
-      const { nome, idade, endereco } = request.body;
+    return {
+      statusCode: HttpStatusCode.Ok,
+      body: updatedUser,
+    };
+  }
+}
 
-      const updatedUser = await userService.update(id, nome, idade, endereco);
+export class DeleteAlunoController extends Controller {
+  async perform(httpRequest: HttpRequest): Promise<HttpResponse> {
+    const { id } = httpRequest.params;
 
-      if (!updatedUser) {
-        return response.status(404).json({ error: "User not found" });
-      }
+    const deletedUser = await userService.remove(id);
 
-      return response.json(updatedUser);
-    } catch (error) {
-      console.error(error);
-      return response.status(500).json({ error: "Internal server error" });
+    if (!deletedUser) {
+      throw new HttpException(HttpStatusCode.NotFound, "User not found");
     }
-  },
 
-  async delete(request: any, response: any) {
-    try {
-      const { id } = request.params;
+    return {
+      statusCode: HttpStatusCode.Ok,
+      body: deletedUser,
+    };
+  }
+}
 
-      const deletedUser = await userService.remove(id);
+export class SearchAlunoByNameController extends Controller {
+  async perform(httpRequest: HttpRequest): Promise<HttpResponse> {
+    const { nome } = httpRequest.params;
 
-      if (!deletedUser) {
-        return response.status(404).json({ error: "User not found" });
-      }
+    const users = await userService.searchByName(nome);
 
-      return response.json(deletedUser);
-    } catch (error) {
-      console.error(error);
-      return response.status(500).json({ error: "Internal server error" });
-    }
-  },
-
-  async searchByName(request: any, response: any) {
-    try {
-      const { nome } = request.params;
-
-      const users = await userService.searchByName(nome);
-
-      return response.json(users);
-    } catch (error) {
-      console.error(error);
-      return response.status(500).json({ error: "Internal server error" });
-    }
-  },
-};
+    return {
+      statusCode: HttpStatusCode.Ok,
+      body: users,
+    };
+  }
+}
