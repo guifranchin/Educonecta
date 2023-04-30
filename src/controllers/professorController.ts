@@ -1,96 +1,122 @@
 import professorService from "../services/professorService";
+import {
+  Controller,
+  HttpException,
+  HttpRequest,
+  HttpResponse,
+  HttpStatusCode,
+} from "./controller_base";
 
-export const professorController = {
-  async create(req: any, res: any): Promise<Response> {
-    const { nome, endereco, especialidade } = req.body;
+export class CreateProfessorContoller extends Controller {
+  async perform(httpRequest: HttpRequest): Promise<HttpResponse> {
+    const { nome, endereco, especialidade } = httpRequest.body;
 
-    try {
-      const createdProfessor = await professorService.create(
-        nome,
-        endereco,
-        especialidade
-      );
-      return res.status(201).json(createdProfessor);
-    } catch (error) {
-      console.log(error);
-      return res.status(500).json({ message: "Erro ao cadastrar professor." });
+    const createdProfessor = await professorService.create(
+      nome,
+      endereco,
+      especialidade
+    );
+    return {
+      statusCode: HttpStatusCode.Created,
+      body: createdProfessor,
+    };
+  }
+}
+
+export class ListProfessoresController extends Controller {
+  async perform(httpRequest: HttpRequest): Promise<HttpResponse> {
+    const professores = await professorService.list();
+
+    return {
+      statusCode: HttpStatusCode.Ok,
+      body: professores,
+    };
+  }
+}
+
+export class FindProfessorByIdController extends Controller {
+  async perform(httpRequest: HttpRequest): Promise<HttpResponse> {
+    const { id } = httpRequest.params;
+    const professor = await professorService.findById(id);
+
+    if (!professor) {
+      throw new HttpException(HttpStatusCode.NotFound, "Professor not found");
     }
-  },
 
-  async update(req: any, res: any): Promise<Response> {
-    const { id } = req.params;
-    const { nome, email, especialidade } = req.body;
+    return {
+      statusCode: HttpStatusCode.Ok,
+      body: professor,
+    };
+  }
+}
 
-    try {
-      const updatedProfessor = await professorService.update(
-        Number(id),
-        nome,
-        email,
-        especialidade
-      );
-      return res.status(200).json(updatedProfessor);
-    } catch (error) {
-      console.log(error);
-      return res.status(500).json({ message: "Erro ao atualizar professor." });
+export class UpdateProfessorController extends Controller {
+  async perform(httpRequest: HttpRequest): Promise<HttpResponse> {
+    const { id } = httpRequest.params;
+    const { nome, email, especialidade } = httpRequest.body;
+
+    const updatedProfessor = await professorService.update(
+      Number(id),
+      nome,
+      email,
+      especialidade
+    );
+
+    if (!updatedProfessor) {
+      throw new HttpException(HttpStatusCode.NotFound, "Professor not found");
     }
-  },
 
-  async delete(req: any, res: any): Promise<Response> {
-    const { id } = req.params;
+    return {
+      statusCode: HttpStatusCode.Ok,
+      body: updatedProfessor,
+    };
+  }
+}
 
-    try {
-      const deletedProfessor = await professorService.delete(Number(id));
-      return res.status(200).json(deletedProfessor);
-    } catch (error) {
-      console.log(error);
-      return res.status(500).json({ message: "Erro ao deletar professor." });
+export class DeleteProfessorController extends Controller {
+  async perform(httpRequest: HttpRequest): Promise<HttpResponse> {
+    const { id } = httpRequest.params;
+
+    const deletedProfessor = await professorService.delete(Number(id));
+
+    if (!deletedProfessor) {
+      throw new HttpException(HttpStatusCode.NotFound, "Professor not found");
     }
-  },
 
-  async list(req: any, res: any): Promise<Response> {
-    try {
-      const professores = await professorService.list();
-      return res.status(200).json(professores);
-    } catch (error) {
-      console.log(error);
-      return res.status(500).json({ message: "Erro ao listar professores." });
+    return {
+      statusCode: HttpStatusCode.Ok,
+      body: deletedProfessor,
+    };
+  }
+}
+
+export class SearchProfessorByEspecialidadeController extends Controller {
+  async perform(httpRequest: HttpRequest): Promise<HttpResponse> {
+    const { especialidade } = httpRequest.params;
+    const professores = await professorService.findByEspecialidade(
+      especialidade
+    );
+
+    return {
+      statusCode: HttpStatusCode.Ok,
+      body: professores,
+    };
+  }
+}
+
+export class SearchProfessorByNomeController extends Controller {
+  async perform(httpRequest: HttpRequest): Promise<HttpResponse> {
+    const { nome } = httpRequest.params;
+
+    const professor = await professorService.findByNome(nome);
+
+    if (!professor) {
+      throw new HttpException(HttpStatusCode.NotFound, "Professor not found");
     }
-  },
 
-  async findById(req: any, res: any): Promise<Response> {
-    const { id } = req.params;
-
-    try {
-      const professor = await professorService.findById(Number(id));
-      if (!professor) {
-        return res.status(404).json({ message: "Prefesso não encontrado." });
-      }
-      return res.status(200).json(professor);
-    } catch (error) {
-      console.log(error);
-      return res.status(500).json({ message: "Erro ao listar professores." });
-    }
-  },
-
-  async findByNome(req: any, res: any) {
-    try {
-      const nome = req.params.nome;
-      const professores = await professorService.findByNome(nome);
-      res.json(professores);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Erro ao buscar professores por nome.' });
-    }
-  },
-
-  async findByEspecialidade(req: any, res: any) {
-    try {
-      const especialidade = req.params.especialidade;
-      const professores = await professorService.findByEspecialidade(especialidade);
-      res.json(professores);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Erro ao buscar professores por especialidade.' });
-    }
-  },
-};
+    return {
+      statusCode: HttpStatusCode.Ok,
+      body: professor,
+    };
+  }
+}

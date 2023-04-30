@@ -1,44 +1,58 @@
-import { Router } from "express";
-import { cursosController } from "./controllers/cursosController";
-import { alunoController } from "./controllers/alunoController";
-import { turmaController } from "./controllers/turmaController";
-import { professorController } from "./controllers/professorController";
+import { Request, Response, Router } from "express";
+import { CreateAlunoContoller, DeleteAlunoController, ListAlunoController, SearchAlunoByNameController, ShowAlunoController, UpdateAlunoController } from "./controllers/alunoController";
+import { Controller, HttpRequest, HttpResponse } from "./controllers/controller_base";
+import { CreateCursoContoller, ListCursosController, SearchCursoByNomeController, SearchCursoBySiglaController, UpdateCursoController } from "./controllers/cursosController";
+import { CreateProfessorContoller, DeleteProfessorController, FindProfessorByIdController, ListProfessoresController, SearchProfessorByEspecialidadeController, SearchProfessorByNomeController, UpdateProfessorController } from "./controllers/professorController";
+import { CreateTurmaContoller, DeleteTurmaController, ListTurmasController, SearchTurmaByAnoController, SearchTurmaBySemestreController, UpdateTurmaController } from "./controllers/turmaController";
 
+function adaptExpressRoute(controller: Controller){
+    return async (req: Request, res: Response) => {
+        const httpRequest : HttpRequest = {
+            body: req.body,
+            headers: req.headers,
+            params: req.params,
+            query: req.query
+        }
+
+        const httpResponse : HttpResponse = await controller.handle(httpRequest)
+        return res.status(httpResponse.statusCode).json(httpResponse.body)
+    }
+}
 
 const routes = Router();
 
 // rotas para alunos
-routes.post("/alunos", alunoController.create);
-routes.put("/alunos/:id", alunoController.update);
-routes.delete("/alunos/:id", alunoController.delete);
-routes.get("/alunos", alunoController.list);
-routes.get("/alunos/:id", alunoController.show);
-routes.get("/alunos/search/:nome", alunoController.searchByName);
+routes.post("/alunos", adaptExpressRoute(new CreateAlunoContoller));
+routes.put("/alunos/:id", adaptExpressRoute(new UpdateAlunoController));
+routes.delete("/alunos/:id", adaptExpressRoute(new DeleteAlunoController));
+routes.get("/alunos", adaptExpressRoute(new ListAlunoController));
+routes.get("/alunos/:id", adaptExpressRoute(new ShowAlunoController));
+routes.get("/alunos/search/:nome", adaptExpressRoute(new SearchAlunoByNameController));
 
 // rotas para cursos
-routes.post("/cursos", cursosController.create);
-routes.put("/cursos/:id", cursosController.update);
-routes.delete("/cursos/:id", cursosController.delete);
-routes.get("/cursos", cursosController.list);
-routes.get("/cursos/sigla/:sigla", cursosController.findBySigla);
-routes.get("/cursos/nome/:nome", cursosController.findByNome);
+routes.post("/cursos", adaptExpressRoute(new CreateCursoContoller));
+routes.put("/cursos/:id", adaptExpressRoute(new UpdateCursoController));
+routes.get("/cursos", adaptExpressRoute(new ListCursosController));
+routes.get("/cursos/sigla/:sigla", adaptExpressRoute(new SearchCursoBySiglaController));
+routes.get("/cursos/nome/:nome", adaptExpressRoute(new SearchCursoByNomeController));
 
 // rotas para turmas
-routes.post("/turmas", turmaController.create);
-routes.put("/turmas/:id", turmaController.update);
-routes.delete("/turmas/:id", turmaController.delete);
-routes.get("/turmas", turmaController.list);
-routes.get("/turmas/search/ano/:ano", turmaController.searchTurmasByAno);
-routes.get("/turmas/search/semestre/:semestre", turmaController.searchTurmasBySemestre);
+routes.post("/turmas", adaptExpressRoute(new CreateTurmaContoller));
+routes.put("/turmas/:id", adaptExpressRoute(new UpdateTurmaController));
+routes.delete("/turmas/:id", adaptExpressRoute(new DeleteTurmaController));
+routes.get("/turmas", adaptExpressRoute(new ListTurmasController));
+routes.get("/turmas/search/ano/:ano", adaptExpressRoute(new SearchTurmaByAnoController));
+routes.get("/turmas/search/semestre/:semestre", adaptExpressRoute(new SearchTurmaBySemestreController));
 
 // rotas para professores
-routes.post('/professor/', professorController.create);
-routes.put('/professor/:id', professorController.update);
-routes.delete('/professor/:id', professorController.delete);
-routes.get('/professor/', professorController.list);
-routes.get('/professor/:id', professorController.findById);
-routes.get("/professores/search/nome/:nome", professorController.findByNome);
-routes.get("/professores/search/especialidade/:especialidade", professorController.findByEspecialidade);
+routes.post('/professor/', adaptExpressRoute(new CreateProfessorContoller));
+routes.put('/professor/:id', adaptExpressRoute(new UpdateProfessorController));
+routes.delete('/professor/:id', adaptExpressRoute(new DeleteProfessorController));
+routes.get('/professor/', adaptExpressRoute(new ListProfessoresController));
+routes.get('/professor/:id', adaptExpressRoute(new FindProfessorByIdController));
+routes.get("/professores/search/nome/:nome", adaptExpressRoute(new SearchProfessorByNomeController));
+routes.get("/professores/search/especialidade/:especialidade", adaptExpressRoute(new SearchProfessorByEspecialidadeController));
 
 
 export { routes };
+

@@ -16,7 +16,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/api", routes);
 
 app.listen(PORT, () => {
-  console.log(`Server listening on portt ${PORT}`);
+  console.log(`Server listening on port ${PORT}`);
 });
 
 export default app;
