@@ -1,20 +1,20 @@
 import { Request, Response, Router } from "express";
-import { CreateAlunoContoller, DeleteAlunoController, ListAlunoController, SearchAlunoByNameController, ShowAlunoController, UpdateAlunoController } from "./controllers/alunoController";
+import { CreateAlunoContoller, DeleteAlunoController, LinkStudentClassController, ListAlunoController, SearchAlunoByNameController, ShowAlunoController, UpdateAlunoController } from "./controllers/alunoController";
 import { Controller, HttpRequest, HttpResponse } from "./controllers/controller_base";
 import { CreateCursoContoller, ListCursosController, SearchCursoByNomeController, SearchCursoBySiglaController, UpdateCursoController } from "./controllers/cursosController";
 import { CreateProfessorContoller, DeleteProfessorController, FindProfessorByIdController, ListProfessoresController, SearchProfessorByEspecialidadeController, SearchProfessorByNomeController, UpdateProfessorController } from "./controllers/professorController";
 import { CreateTurmaContoller, DeleteTurmaController, ListTurmasController, SearchTurmaByAnoController, SearchTurmaBySemestreController, UpdateTurmaController } from "./controllers/turmaController";
 
-function adaptExpressRoute(controller: Controller){
+function adaptExpressRoute(controller: Controller) {
     return async (req: Request, res: Response) => {
-        const httpRequest : HttpRequest = {
+        const httpRequest: HttpRequest = {
             body: req.body,
             headers: req.headers,
             params: req.params,
             query: req.query
         }
 
-        const httpResponse : HttpResponse = await controller.handle(httpRequest)
+        const httpResponse: HttpResponse = await controller.handle(httpRequest)
         return res.status(httpResponse.statusCode).json(httpResponse.body)
     }
 }
@@ -43,6 +43,7 @@ routes.delete("/turmas/:id", adaptExpressRoute(new DeleteTurmaController));
 routes.get("/turmas", adaptExpressRoute(new ListTurmasController));
 routes.get("/turmas/search/ano/:ano", adaptExpressRoute(new SearchTurmaByAnoController));
 routes.get("/turmas/search/semestre/:semestre", adaptExpressRoute(new SearchTurmaBySemestreController));
+routes.patch("/turmas/alunos/:turma", adaptExpressRoute(new LinkStudentClassController));
 
 // rotas para professores
 routes.post('/professor/', adaptExpressRoute(new CreateProfessorContoller));
