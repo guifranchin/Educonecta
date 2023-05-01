@@ -48,21 +48,4 @@ export const cursosService = {
       .first();
     return curso;
   },
-
-  async linkCourseToClass(turmaId: number, cursoid: number) {
-    const turma = await knex("turmas").where({ id: turmaId }).first();
-    const curso = await knex("cursos").where({ id: cursoid }).first();
-
-    if (!curso || !turma) {
-      return false
-    }
-
-    const turmaUpdated = await knex("turmas").where({ id: turmaId }).update({
-      curso_id: curso.id
-    }).select("*")
-
-
-    return turmaUpdated;
-
-  },
 };
