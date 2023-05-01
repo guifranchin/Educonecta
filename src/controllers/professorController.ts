@@ -1,4 +1,4 @@
-import { professorService } from "../services/professorService";
+import {professorService} from "../services/professorService";
 import {
   Controller,
   HttpException,
@@ -117,23 +117,6 @@ export class SearchProfessorByNomeController extends Controller {
     return {
       statusCode: HttpStatusCode.Ok,
       body: professor,
-    };
-  }
-}
-export class LinkTeacherClassController extends Controller {
-  async perform(httpRequest: HttpRequest): Promise<HttpResponse> {
-    const { turma } = httpRequest.params;
-    const { professor_id } = httpRequest.body
-
-    const ProfessorUpdated = await professorService.linkTeacherToClass(turma, professor_id);
-
-    if (!ProfessorUpdated) {
-      throw new HttpException(HttpStatusCode.NotFound, "Professor not found or Turma not found");
-    }
-
-    return {
-      statusCode: HttpStatusCode.Ok,
-      body: {},
     };
   }
 }

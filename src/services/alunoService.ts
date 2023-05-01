@@ -1,14 +1,12 @@
 import knex from "../database/connection";
 
 export const userService = {
-
   async create(nome: any, idade: any, endereco: any) {
     const user = {
       nome,
       idade,
       endereco,
     };
-
     const [createdUser] = await knex("alunos").insert(user).returning("*");
     return createdUser;
   },
@@ -20,7 +18,7 @@ export const userService = {
       endereco,
     };
     const [updatedUser] = await knex("alunos")
-      .where({ id: id })
+      .where({ id })
       .update(user)
       .returning("*");
     return updatedUser;
