@@ -45,8 +45,8 @@ routes.get("/turmas", adaptExpressRoute(new ListTurmasController));
 routes.get("/turmas/search/ano/:ano", adaptExpressRoute(new SearchTurmaByAnoController));
 routes.get("/turmas/search/semestre/:semestre", adaptExpressRoute(new SearchTurmaBySemestreController));
 routes.patch("/turmas/curso/:turma", adaptExpressRoute(new LinkCourseClassController))
+routes.patch("/turmas/alunos/:turma", adaptExpressRoute(new LinkStudentClassController));
 routes.patch("/turmas/professor/:turma", adaptExpressRoute(new LinkTeacherClassController))
-
 
 // rotas para professores
 routes.post('/professor/', adaptExpressRoute(new CreateProfessorContoller));
