@@ -2,7 +2,7 @@ import { Request, Response, Router } from "express";
 import { CreateAlunoContoller, DeleteAlunoController, LinkStudentClassController, ListAlunoController, SearchAlunoByNameController, ShowAlunoController, UpdateAlunoController } from "./controllers/alunoController";
 import { Controller, HttpRequest, HttpResponse } from "./controllers/controller_base";
 import { CreateCursoContoller, LinkCourseClassController, ListCursosController, SearchCursoByNomeController, SearchCursoBySiglaController, UpdateCursoController } from "./controllers/cursosController";
-import { CreateProfessorContoller, DeleteProfessorController, FindProfessorByIdController, ListProfessoresController, SearchProfessorByEspecialidadeController, SearchProfessorByNomeController, UpdateProfessorController } from "./controllers/professorController";
+import { CreateProfessorContoller, DeleteProfessorController, FindProfessorByIdController, LinkTeacherClassController, ListProfessoresController, SearchProfessorByEspecialidadeController, SearchProfessorByNomeController, UpdateProfessorController } from "./controllers/professorController";
 import { CreateTurmaContoller, DeleteTurmaController, ListTurmasController, SearchTurmaByAnoController, SearchTurmaBySemestreController, UpdateTurmaController } from "./controllers/turmaController";
 
 function adaptExpressRoute(controller: Controller) {
@@ -46,6 +46,7 @@ routes.get("/turmas/search/ano/:ano", adaptExpressRoute(new SearchTurmaByAnoCont
 routes.get("/turmas/search/semestre/:semestre", adaptExpressRoute(new SearchTurmaBySemestreController));
 routes.patch("/turmas/curso/:turma", adaptExpressRoute(new LinkCourseClassController))
 routes.patch("/turmas/alunos/:turma", adaptExpressRoute(new LinkStudentClassController));
+routes.patch("/turmas/professor/:turma", adaptExpressRoute(new LinkTeacherClassController))
 
 // rotas para professores
 routes.post('/professor/', adaptExpressRoute(new CreateProfessorContoller));
