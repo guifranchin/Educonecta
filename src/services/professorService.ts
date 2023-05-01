@@ -61,5 +61,23 @@ export const professorService = {
       .select("*");
     return professores;
   },
+
+
+  async linkTeacherToClass(turmaId: number, professorid: number) {
+    const turma = await knex("turmas").where({ id: turmaId }).first();
+    const professor = await knex("professores").where({ id: professorid }).first();
+
+    if (!professor || !turma) {
+      return false
+    }
+
+    const turmaUpdated = await knex("turmas").where({ id: turmaId }).update({
+      professor_id: professor.id
+    }).select("*")
+
+
+    return turmaUpdated;
+
+  },
 };
 
