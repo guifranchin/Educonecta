@@ -97,3 +97,23 @@ export class SearchCursoByNomeController extends Controller {
     };
   }
 }
+
+
+
+export class LinkCourseClassController extends Controller {
+  async perform(httpRequest: HttpRequest): Promise<HttpResponse> {
+    const { turma } = httpRequest.params;
+    const { curso_id } = httpRequest.body
+
+    const cursoUpdated = await cursosService.linkCourseToClass(turma, curso_id);
+
+    if (!cursoUpdated) {
+      throw new HttpException(HttpStatusCode.NotFound, "Curso not found or Turma not found");
+    }
+
+    return {
+      statusCode: HttpStatusCode.Ok,
+      body: {},
+    };
+  }
+}
