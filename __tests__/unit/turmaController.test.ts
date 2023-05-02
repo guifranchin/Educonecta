@@ -1,4 +1,4 @@
-import { CreateTurmaContoller, DeleteTurmaController, SearchTurmaByAnoController, SearchTurmaBySemestreController, UpdateTurmaController } from "../../src/controllers/turmaController";
+import { CreateTurmaContoller, DeleteTurmaController, ListTurmasController, SearchTurmaByAnoController, SearchTurmaBySemestreController, UpdateTurmaController } from "../../src/controllers/turmaController";
 import { HttpStatusCode } from "../../src/controllers/controller_base";
 import { turmaService } from "../../src/services/turmaService";
 
@@ -11,7 +11,7 @@ const request = {
   },
 };
 
-describe("Curso controllers", () => {
+describe("turma controllers", () => {
   let turma: any;
 
   beforeAll(() => {
@@ -19,7 +19,7 @@ describe("Curso controllers", () => {
       ano: "2023",
       semestre: "1",
       cursoId: 1,
-    professorId: 1
+      professorId: 1
     };
   });
 
@@ -66,6 +66,28 @@ describe("Curso controllers", () => {
     expect(res.body).toBe(expectedTurma);
   });
 
+  it("Update turma controller error test", async () => {
+    const turmaServiceUpdateSpy = jest
+      .spyOn(turmaService, "update")
+      .mockResolvedValue(null as any);
+
+    const updateTurmaController = new UpdateTurmaController();
+    const res = await updateTurmaController.handle({
+      body: request.body,
+      params: {
+        id: 1,
+      },
+    });
+
+    expect(turmaServiceUpdateSpy).toHaveBeenCalledWith(1, "2023", "1", 1, 1);
+
+    expect(res.statusCode).toBe(HttpStatusCode.NotFound);
+    expect(res.body).toStrictEqual({ "message": "Turma not found" });
+  });
+
+
+
+
   it("Delete turma controller", async () => {
     const expectedTurma = {
       id: 1,
@@ -87,6 +109,27 @@ describe("Curso controllers", () => {
 
     expect(res.statusCode).toBe(HttpStatusCode.Ok);
     expect(res.body).toBe(expectedTurma);
+  });
+
+
+  it("Delete aluno controller with error", async () => {
+
+
+    const turmaServiceCreateSpy = jest
+      .spyOn(turmaService, "delete")
+      .mockResolvedValue(null as any);
+
+    const deleteTurmaController = new DeleteTurmaController();
+    const res = await deleteTurmaController.handle({
+      params: {
+        id: 1,
+      },
+    });
+
+    expect(turmaServiceCreateSpy).toHaveBeenCalledWith(1);
+
+    expect(res.statusCode).toBe(HttpStatusCode.NotFound);
+    expect(res.body).toStrictEqual({ "message": "Turma not found" });
   });
 
   it("Search turma by ano controller", async () => {
