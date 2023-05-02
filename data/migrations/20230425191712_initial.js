@@ -31,8 +31,6 @@ exports.up = function (knex) {
       table.string('endereco').notNullable();
       table.string('especialidade').notNullable();
     }),
-
-
   ]);
 };
 

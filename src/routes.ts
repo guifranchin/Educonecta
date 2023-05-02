@@ -5,7 +5,7 @@ import { CreateCursoContoller, LinkCourseClassController, ListCursosController, 
 import { CreateProfessorContoller, DeleteProfessorController, FindProfessorByIdController, LinkTeacherClassController, ListProfessoresController, SearchProfessorByEspecialidadeController, SearchProfessorByNomeController, UpdateProfessorController } from "./controllers/professorController";
 import { CreateTurmaContoller, DeleteTurmaController, ListTurmasController, SearchTurmaByAnoController, SearchTurmaBySemestreController, UpdateTurmaController } from "./controllers/turmaController";
 
-function adaptExpressRoute(controller: Controller) {
+export function adaptExpressRoute(controller: Controller){
     return async (req: Request, res: Response) => {
         const httpRequest: HttpRequest = {
             body: req.body,

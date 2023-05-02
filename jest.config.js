@@ -5,8 +5,8 @@ module.exports = {
     moduleNameMapper: {
       '^@/(.*)$': '<rootDir>/src/$1',
     },
-    collectCoverageFrom: ['src/**/*.ts?(x)', '!src/**/*.d.ts'],
-    coverageReporters: ['lcov', 'text', 'text-summary'],
+    "collectCoverage": true,
+    "coverageReporters": ["json", "html"],
     globals: {
       'ts-jest': {
         tsconfig: 'tsconfig.json',
