@@ -61,7 +61,7 @@ export class DeleteTurmaController extends Controller {
     const deletedTurma = await turmaService.delete(Number(id));
 
     if (!deletedTurma) {
-      throw new HttpException(HttpStatusCode.NotFound, "Professor not found");
+      throw new HttpException(HttpStatusCode.NotFound, "Turma not found");
     }
 
     return {

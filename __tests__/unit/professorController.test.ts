@@ -10,6 +10,7 @@ import { professorService } from "../../src/services/professorService";
 import { ListAlunoController } from "../../src/controllers/alunoController";
 import { ListProfessoresController } from "../../src/controllers/professorController";
 import { FindProfessorByIdController } from "../../src/controllers/professorController";
+import { LinkTeacherClassController } from "../../src/controllers/professorController";
 
 const request = {
   body: {
@@ -129,7 +130,7 @@ describe("Professor controllers", () => {
     );
 
     expect(res.statusCode).toBe(HttpStatusCode.NotFound);
-    expect(res.body).toStrictEqual({"message": "Professor not found"});
+    expect(res.body).toStrictEqual({ "message": "Professor not found" });
   });
 
   it("Delete professor controller", async () => {
@@ -175,7 +176,7 @@ describe("Professor controllers", () => {
     expect(professorServiceCreateSpy).toHaveBeenCalledWith(1);
 
     expect(res.statusCode).toBe(HttpStatusCode.NotFound);
-    expect(res.body).toStrictEqual({"message": "Professor not found"});
+    expect(res.body).toStrictEqual({ "message": "Professor not found" });
   });
 
   it("Find professor by id", async () => {
@@ -221,7 +222,7 @@ describe("Professor controllers", () => {
     expect(professorServiceFindByIdSpy).toHaveBeenCalledWith(1);
 
     expect(res.statusCode).toBe(HttpStatusCode.NotFound);
-    expect(res.body).toStrictEqual({"message": "Professor not found"});
+    expect(res.body).toStrictEqual({ "message": "Professor not found" });
   });
 
   it("Search professor by name controller", async () => {
@@ -268,7 +269,7 @@ describe("Professor controllers", () => {
     expect(professorServiceCreateSpy).toHaveBeenCalledWith("Guilheme");
 
     expect(res.statusCode).toBe(HttpStatusCode.NotFound);
-    expect(res.body).toStrictEqual({"message": "Professor not found"});
+    expect(res.body).toStrictEqual({ "message": "Professor not found" });
   });
 
   it("Search professor by especialidade controller", async () => {
@@ -290,9 +291,56 @@ describe("Professor controllers", () => {
     });
 
     expect(professorServiceCreateSpy).toHaveBeenCalledWith("dar aula");
-
     expect(res.statusCode).toBe(HttpStatusCode.Ok);
     expect(res.body).toBe(expectedProfessor);
     expect(res.body.especialidade).toBe("dar aula");
   });
+
+
+  it("Link teacher to class", async () => {
+    const expectedProfessor = 1
+
+    const TeacherListServiceCreateSpy = jest
+      .spyOn(professorService, "linkTeacherToClass")
+      .mockResolvedValue(expectedProfessor);
+
+
+    const linkTeacherClassController = new LinkTeacherClassController();
+    const res = await linkTeacherClassController.handle({
+      params: {
+        turma: 1
+      },
+      body: {
+        professor_id: 1
+      }
+    });
+
+    expect(TeacherListServiceCreateSpy).toHaveBeenCalledWith(1, 1);
+    expect(res.statusCode).toBe(HttpStatusCode.Ok);
+    expect(res.body).toStrictEqual({});
+  });
+
+  it("Link teacher to class with error", async () => {
+    const expectedProfessor = 1
+
+    const TeacherListServiceCreateSpy = jest
+      .spyOn(professorService, "linkTeacherToClass")
+      .mockResolvedValue(null as any);
+
+
+    const linkTeacherClassController = new LinkTeacherClassController();
+    const res = await linkTeacherClassController.handle({
+      params: {
+        turma: 1
+      },
+      body: {
+        professor_id: 1
+      }
+    });
+
+    expect(TeacherListServiceCreateSpy).toHaveBeenCalledWith(1, 1);
+    expect(res.statusCode).toBe(HttpStatusCode.NotFound);
+    expect(res.body).toStrictEqual({ "message": "Professor not found or Turma not found" });
+  });
+
 });
