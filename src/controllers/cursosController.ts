@@ -117,3 +117,35 @@ export class LinkCourseClassController extends Controller {
     };
   }
 }
+
+export class ListTeachersByCourseAndClass extends Controller {
+  async perform(httpRequest: HttpRequest): Promise<HttpResponse> {
+    const { cursoId, turmaAno, turmaSemstre } = httpRequest.params;
+
+
+    const cursoUpdated = await cursosService.listaTeacherByCursoAndTurma(cursoId, turmaAno, turmaSemstre);
+
+    if (!cursoUpdated) {
+      throw new HttpException(HttpStatusCode.NotFound, "Curso not found or Turma not found");
+    }
+
+    return {
+      statusCode: HttpStatusCode.Ok,
+      body: cursoUpdated,
+    };
+  }
+}
+
+export class ListStudentsByCourseAndClass extends Controller {
+  async perform(httpRequest: HttpRequest): Promise<HttpResponse> {
+    const { cursoId, turmaAno, turmaSemstre } = httpRequest.params;
+
+
+    const cursoUpdated = await cursosService.listStudentsByCursoAndTurma(cursoId, turmaAno, turmaSemstre);
+
+    return {
+      statusCode: HttpStatusCode.Ok,
+      body: cursoUpdated,
+    };
+  }
+}
