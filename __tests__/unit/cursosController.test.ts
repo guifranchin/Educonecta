@@ -333,4 +333,38 @@ describe("Curso controllers", () => {
     ]);
   });
 
+  it("List Students By Course And Class", async () => {
+    const expectedCurso = [
+      {
+        id: 1,
+        nome: "Guilhermee",
+      },
+    ];
+
+    const CursosListServiceCreateSpy = jest
+      .spyOn(cursosService, "listStudentsByCursoAndTurma")
+      .mockResolvedValue(expectedCurso);
+
+    const listStudentsByCourseAndClass = new ListStudentsByCourseAndClass();
+    const res = await listStudentsByCourseAndClass.handle({
+      params: {
+        cursoId: 1, turmaAno: 2022, turmaSemstre: "1"
+      },
+    });
+
+    expect(CursosListServiceCreateSpy).toHaveBeenCalledWith(1, 2022, '1');
+
+    expect(res.statusCode).toBe(HttpStatusCode.Ok);
+    expect(res.body).toStrictEqual([
+      {
+        id: 1,
+        nome: "Guilhermee",
+      },
+    ]);
+  });
+
 });
+function beforeAll(arg0: () => void) {
+  throw new Error("Function not implemented.");
+}
+

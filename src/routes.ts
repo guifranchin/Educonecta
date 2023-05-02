@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
 import { CreateAlunoContoller, DeleteAlunoController, LinkStudentClassController, ListAlunoController, SearchAlunoByNameController, ShowAlunoController, UpdateAlunoController } from "./controllers/alunoController";
 import { Controller, HttpRequest, HttpResponse } from "./controllers/controller_base";
-import { CreateCursoContoller, LinkCourseClassController, ListCursosController, SearchCursoByNomeController, SearchCursoBySiglaController, UpdateCursoController } from "./controllers/cursosController";
+import { CreateCursoContoller, LinkCourseClassController, ListCursosController, ListStudentsByCourseAndClass, ListTeachersByCourseAndClass, SearchCursoByNomeController, SearchCursoBySiglaController, UpdateCursoController } from "./controllers/cursosController";
 import { CreateProfessorContoller, DeleteProfessorController, FindProfessorByIdController, LinkTeacherClassController, ListProfessoresController, SearchProfessorByEspecialidadeController, SearchProfessorByNomeController, UpdateProfessorController } from "./controllers/professorController";
 import { CreateTurmaContoller, DeleteTurmaController, ListTurmasController, SearchTurmaByAnoController, SearchTurmaBySemestreController, UpdateTurmaController } from "./controllers/turmaController";
 
@@ -29,6 +29,7 @@ routes.delete("/alunos/:id", adaptExpressRoute(new DeleteAlunoController));
 routes.get("/alunos", adaptExpressRoute(new ListAlunoController));
 routes.get("/alunos/:id", adaptExpressRoute(new ShowAlunoController));
 routes.get("/alunos/search/:nome", adaptExpressRoute(new SearchAlunoByNameController));
+routes.get("/cursos/:cursoId/turmas/:turmaAno/:turmaSemstre/alunos", adaptExpressRoute(new ListStudentsByCourseAndClass));
 
 // rotas para cursos
 routes.post("/cursos", adaptExpressRoute(new CreateCursoContoller));

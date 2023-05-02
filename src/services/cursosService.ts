@@ -81,4 +81,20 @@ export const cursosService = {
     const result = await knex.raw(query, [cursoId, turmaAno, turmaSemestre]);
     return result.rows;
   },
+
+  async listStudentsByCursoAndTurma(
+    cursoId: number,
+    turmaAno: any,
+    turmaSemestre: any
+  ) {
+      const query = `
+      SELECT a.id, a.nome
+      FROM alunos a
+      INNER JOIN turmas t ON t.id = a.id
+      INNER JOIN cursos c ON c.id = t.curso_id
+      WHERE c.id = ? AND t.ano = ? AND t.semestre = ?
+    `;
+      const result = await knex.raw(query, [cursoId, turmaAno, turmaSemestre]);
+      return result.rows;
+  },
 };

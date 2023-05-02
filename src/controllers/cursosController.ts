@@ -135,3 +135,17 @@ export class ListTeachersByCourseAndClass extends Controller {
     };
   }
 }
+
+export class ListStudentsByCourseAndClass extends Controller {
+  async perform(httpRequest: HttpRequest): Promise<HttpResponse> {
+    const { cursoId, turmaAno, turmaSemstre } = httpRequest.params;
+
+
+    const cursoUpdated = await cursosService.listStudentsByCursoAndTurma(cursoId, turmaAno, turmaSemstre);
+
+    return {
+      statusCode: HttpStatusCode.Ok,
+      body: cursoUpdated,
+    };
+  }
+}
