@@ -95,3 +95,22 @@ export class SearchAlunoByNameController extends Controller {
     };
   }
 }
+
+export class LinkStudentClassController extends Controller {
+  async perform(httpRequest: HttpRequest): Promise<HttpResponse> {
+    const { turma } = httpRequest.params;
+    const { aluno_id } = httpRequest.body
+
+    const AlunoUpdated = await userService.linkStudentToClass(turma, aluno_id);
+
+    if (!AlunoUpdated) {
+      throw new HttpException(HttpStatusCode.NotFound, "Aluno not found or Turma not found");
+    }
+
+    return {
+      statusCode: HttpStatusCode.Ok,
+      body: {},
+    };
+
+  }
+}
