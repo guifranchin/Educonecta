@@ -1,12 +1,14 @@
 import knex from "../database/connection";
 
 export const userService = {
+
   async create(nome: any, idade: any, endereco: any) {
     const user = {
       nome,
       idade,
       endereco,
     };
+
     const [createdUser] = await knex("alunos").insert(user).returning("*");
     return createdUser;
   },
@@ -18,7 +20,7 @@ export const userService = {
       endereco,
     };
     const [updatedUser] = await knex("alunos")
-      .where({ id })
+      .where({ id: id })
       .update(user)
       .returning("*");
     return updatedUser;
@@ -48,4 +50,22 @@ export const userService = {
       .select("*");
     return users;
   },
+
+
+  async linkStudentToClass(turmaId: number, aluno_id: number) {
+    const turma = await knex("turmas").where({ id: turmaId }).first();
+    const aluno = await knex("alunos").where({ id: aluno_id }).first();
+
+    if (!aluno || !turma) {
+      return false
+    }
+
+    const turmaUpdated = await knex("turmas").where({ id: turmaId }).update({
+      aluno_id: aluno.id
+    }).select("*")
+
+
+    return turmaUpdated;
+
+  }
 };
