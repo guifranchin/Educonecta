@@ -15,6 +15,8 @@ exports.up = function(knex) {
       table.foreign('curso_id').references('cursos.id').onDelete('SET NULL');
       table.integer('professor_id').unsigned();
       table.foreign('professor_id').references('professores.id').onDelete('SET NULL');
+      table.integer('aluno_id').unsigned();
+      table.foreign('aluno_id').references('alunos.id').onDelete('SET NULL');
     }),
 
     knex.schema.createTable('cursos', function(table) {
@@ -30,19 +32,11 @@ exports.up = function(knex) {
       table.string('especialidade').notNullable();
     }),
 
-    knex.schema.createTable('alunos_turmas', function(table) {
-      table.integer('aluno_id').unsigned();
-      table.foreign('aluno_id').references('alunos.id').onDelete('CASCADE');
-      table.integer('turma_id').unsigned();
-      table.foreign('turma_id').references('turmas.id').onDelete('CASCADE');
-      table.primary(['aluno_id', 'turma_id']);
-    })
   ]);
 };
 
 exports.down = function(knex) {
   return Promise.all([
-    knex.schema.dropTable('alunos_turmas'),
     knex.schema.dropTable('professores'),
     knex.schema.dropTable('cursos'),
     knex.schema.dropTable('turmas'),
