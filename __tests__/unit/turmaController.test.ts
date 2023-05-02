@@ -137,4 +137,24 @@ describe("Curso controllers", () => {
     expect(res.body).toBe(expectedTurma);
     expect(res.body.semestre).toBe("1");
   });
+
+  it("List Turmas Controller", async () => {
+    const expectedTurma = [{
+      id: 1,
+      ...turma,
+    }];
+
+    const turmaServiceCreateSpy = jest
+      .spyOn(turmaService, "list")
+      .mockResolvedValue(expectedTurma);
+
+    const listTurmasController =
+      new ListTurmasController();
+    const res = await listTurmasController.handle({});
+
+    expect(turmaServiceCreateSpy).toHaveBeenCalledWith();
+
+    expect(res.statusCode).toBe(HttpStatusCode.Ok);
+    expect(res.body).toBe(expectedTurma);
+  });
 });
