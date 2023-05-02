@@ -65,4 +65,20 @@ export const cursosService = {
     return turmaUpdated;
 
   },
+
+  async listaTeacherByCursoAndTurma(
+    cursoId: number,
+    turmaAno: any,
+    turmaSemestre: any
+  ) {
+    const query = `
+      SELECT p.id, p.nome
+      FROM professores p
+      INNER JOIN turmas t ON t.professor_id  = p.id
+      INNER JOIN cursos c ON t.curso_id = c.id
+      WHERE c.id = ? AND t.ano = ? AND t.semestre = ?
+      `;
+    const result = await knex.raw(query, [cursoId, turmaAno, turmaSemestre]);
+    return result.rows;
+  },
 };

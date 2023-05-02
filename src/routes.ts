@@ -36,6 +36,7 @@ routes.put("/cursos/:id", adaptExpressRoute(new UpdateCursoController));
 routes.get("/cursos", adaptExpressRoute(new ListCursosController));
 routes.get("/cursos/sigla/:sigla", adaptExpressRoute(new SearchCursoBySiglaController));
 routes.get("/cursos/nome/:nome", adaptExpressRoute(new SearchCursoByNomeController));
+routes.get("/cursos/:cursoId/turmas/:turmaAno/:turmaSemstre/professores", adaptExpressRoute(new ListTeachersByCourseAndClass));
 
 
 // rotas para turmas
